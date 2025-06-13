@@ -12,6 +12,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,16 +37,21 @@ import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import mx.dev.cmg.android.wavedemo.ui.theme.WaveDemoTheme
+import mx.dev.cmg.android.wavedemo.ui.theme.backgroundGradientColor
+import mx.dev.cmg.android.wavedemo.ui.theme.waveColor
 import java.util.Collections.frequency
 import kotlin.math.PI
 import kotlin.math.exp
@@ -64,6 +71,15 @@ fun AudioControlledWaveScreen(
     modifier: Modifier = Modifier,
     audioViewModel: AudioViewModel = viewModel()
 ) {
+    val brush = Brush.horizontalGradient(
+        colorStops = arrayOf(
+            0.0f to MaterialTheme.colorScheme.primary.copy(alpha = 0f),
+            0.3f to Color.Black,
+            0.7f to Color.Black,
+            1f to MaterialTheme.colorScheme.secondary.copy(alpha = 0f),
+        )
+    )
+
     val context = LocalContext.current
     var hasAudioPermission by remember { mutableStateOf(false) } // You'd check actual permission
 
@@ -103,7 +119,7 @@ fun AudioControlledWaveScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primary)
+            .background(Brush.verticalGradient(backgroundGradientColor))
             .padding(16.dp)
     ) {
         Button(onClick = {
@@ -116,23 +132,15 @@ fun AudioControlledWaveScreen(
             Text("Stop Recording")
         }
 
-        val brush = Brush.horizontalGradient(
-            colorStops = arrayOf(
-                0.0f to MaterialTheme.colorScheme.primary,
-                0.3f to MaterialTheme.colorScheme.primary.copy(alpha = 0f),
-                0.7f to MaterialTheme.colorScheme.secondary.copy(alpha = 0f),
-                1f to MaterialTheme.colorScheme.primary
-            )
-        )
-
         Box(
             modifier = Modifier.fillMaxWidth().height(200.dp)
+                .graphicsLayer(alpha = 0.99f)
                 .drawWithContent {
                     drawContent()
                     drawRect(
                         brush = brush,
                         size = size,
-                        blendMode = androidx.compose.ui.graphics.BlendMode.SrcOver
+                        blendMode = BlendMode.DstIn
                     )
                 },
 
@@ -142,7 +150,7 @@ fun AudioControlledWaveScreen(
                     .fillMaxWidth()
                     .fillMaxHeight()
                     .blur(1.dp),
-                waveColor = MaterialTheme.colorScheme.onPrimary,
+                waveColor = waveColor,
                 waveSpeed = 2f,
                 amplitude = smoothedAmplitude*2f, // Use the live amplitude
                 frequency = 0.05f,            // Adjust for visual preference
@@ -155,7 +163,7 @@ fun AudioControlledWaveScreen(
                     .fillMaxHeight()
                     .blur(1.dp)
                 ,
-                waveColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
+                waveColor = waveColor.copy(alpha = 0.5f),
                 waveSpeed = 3f,
                 amplitude = smoothedAmplitude, // Use the live amplitude
                 frequency = 0.030f,            // Adjust for visual preference
@@ -167,7 +175,7 @@ fun AudioControlledWaveScreen(
                     .fillMaxWidth()
                     .fillMaxHeight()
                     .blur(1.dp),
-                waveColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.2f),
+                waveColor = waveColor.copy(alpha = 0.2f),
                 waveSpeed = 1f,
                 amplitude = smoothedAmplitude*0.5f, // Use the live amplitude
                 frequency = 0.015f,            // Adjust for visual preference
