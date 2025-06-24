@@ -2,6 +2,7 @@ package mx.dev.cmg.android.wavedemo
 
 import android.Manifest
 import android.R.attr.strokeWidth
+import android.R.attr.y
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.Animatable
@@ -74,8 +75,8 @@ fun AudioControlledWaveScreen(
     val brush = Brush.horizontalGradient(
         colorStops = arrayOf(
             0.0f to MaterialTheme.colorScheme.primary.copy(alpha = 0f),
-            0.3f to Color.Black,
-            0.7f to Color.Black,
+            0.1f to Color.Black,
+            0.9f to Color.Black,
             1f to MaterialTheme.colorScheme.secondary.copy(alpha = 0f),
         )
     )
@@ -149,24 +150,13 @@ fun AudioControlledWaveScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()
-                    .blur(1.dp),
-                waveColor = waveColor,
-                waveSpeed = 2f,
-                amplitude = smoothedAmplitude*2f, // Use the live amplitude
-                frequency = 0.05f,            // Adjust for visual preference
-                strokeWidth = 5.dp.value
-            )
-
-            WaveForm(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
                     .blur(1.dp)
                 ,
-                waveColor = waveColor.copy(alpha = 0.5f),
-                waveSpeed = 3f,
-                amplitude = smoothedAmplitude, // Use the live amplitude
-                frequency = 0.030f,            // Adjust for visual preference
+//                waveColor = waveColor.copy(alpha = 0.5f),
+                waveColor = waveColor,
+                waveSpeed = 20f,
+                amplitude = smoothedAmplitude*2f, // Use the live amplitude
+                frequency = 0.01f,            // Adjust for visual preference
                 strokeWidth = 5.dp.value
             )
 
@@ -174,11 +164,41 @@ fun AudioControlledWaveScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()
-                    .blur(1.dp),
-                waveColor = waveColor.copy(alpha = 0.2f),
-                waveSpeed = 1f,
+                    .blur(2.dp)
+                ,
+//                waveColor = waveColor.copy(alpha = 0.5f),
+                waveColor = waveColor,
+                waveSpeed = 60f,
+                amplitude = smoothedAmplitude, // Use the live amplitude
+                frequency = 0.006f,            // Adjust for visual preference
+                strokeWidth = 5.dp.value
+            )
+
+            WaveForm(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .blur(2.dp)
+                ,
+//                waveColor = waveColor.copy(alpha = 0.5f),
+                waveColor = waveColor,
+                waveSpeed = 40f,
                 amplitude = smoothedAmplitude*0.5f, // Use the live amplitude
-                frequency = 0.015f,            // Adjust for visual preference
+                frequency = 0.003f,            // Adjust for visual preference
+                strokeWidth = 5.dp.value
+            )
+
+            WaveForm(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .blur(2.dp)
+                ,
+//                waveColor = waveColor.copy(alpha = 0.5f),
+                waveColor = waveColor,
+                waveSpeed = 80f,
+                amplitude = smoothedAmplitude*0.5f, // Use the live amplitude
+                frequency = 0.001f,            // Adjust for visual preference
                 strokeWidth = 5.dp.value
             )
         }
@@ -202,7 +222,7 @@ fun WaveForm(
             targetValue = (2 * PI).toFloat() * waveSpeed, // Animate one full cycle
             animationSpec = infiniteRepeatable(
                 animation = tween(
-                    durationMillis = (waveSpeed*1000).toInt(),
+                    durationMillis = (waveSpeed*2000).toInt(),
                     easing = LinearEasing
                 ), // Adjust duration for speed
                 repeatMode = RepeatMode.Restart
